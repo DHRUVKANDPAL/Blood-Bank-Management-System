@@ -1,0 +1,249 @@
+<!-- templates/donor_dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Add your custom styles if needed -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: #dc3545; /* Red color */
+            margin-bottom: 20px; /* Added space after the navbar */
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem; /* Increased font size for the brand */
+        }
+
+        .navbar-nav .nav-item .nav-link {
+            font-size: 1.2rem; /* Increased font size for navbar links */
+            margin-right: 10px; /* Added space between navbar links */
+        }
+
+        .container {
+            margin-top: 20px; /* Slightly reduced the top margin */
+        }
+
+        .card {
+            margin-bottom: 20px;
+        }
+
+        h2, h3 {
+            color: #dc3545; /* Red color */
+        }
+
+        p {
+            color: #5c636a; /* Gray color */
+        }
+
+        .btn-primary {
+            background-color: #007bff; /* Blue color */
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3; /* Darker blue color on hover */
+            border-color: #0056b3;
+        }
+
+        .btn-success {
+            background-color: #28a745; /* Green color */
+            border-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #218838; /* Darker green color on hover */
+            border-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            background-color: #dc3545; /* Red color */
+            color: #ffffff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top mb-10">
+    <div class="container">
+        <a class="navbar-brand" href="#">Blood Donation</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<br><br><br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2>Donor Information</h2>
+                    <p style="font-size: 18px;">ID: {{ donor.id }}</p>
+                    <p style="font-size: 18px;">Name: {{ donor.full_name }}</p>
+                    <p style="font-size: 18px;">Contact: {{ donor.contact_details }}</p>
+                    <p style="font-size: 18px;">Blood Type: {{ donor.blood_type }}</p>
+                    <p style="font-size: 18px;">Gender: {{ donor.gender }}</p>
+                    <p style="font-size: 18px;">Date of Birth: {{ donor.date_of_birth }}</p>
+                    <a href="{{ url_for('edit_profile', donor_id=donor.id) }}" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Donation Form</h3>
+                    <form action="{{ url_for('donate') }}" method="post">
+                        <input type="hidden" name="donor_id" value="{{ donor.id }}">
+                        
+                        <div class="form-group">
+                            <label for="quantity">Quantity Donated:</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="donation_date">Donation Date:</label>
+                            <input type="date" class="form-control" id="donation_date" name="donation_date" required>
+                        </div>
+
+                        <!-- Add a dropdown for blood group -->
+                        <div class="form-group">
+                            <label for="blood_group">Blood Group:</label>
+                            <select id="blood_group" name="blood_group" class="form-control" required>
+                                <option value="{{ donor.blood_type }}">{{ donor.blood_type }}</option>
+                                
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Donate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h3>Donation Records</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">Date</th>
+                        <th onclick="sortTable(1)">Quantity</th>
+                        <th onclick="sortTable(2)">Blood Group</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in donation_records %}
+                        <tr>
+                            <td>{{ record.donation_date }}</td>
+                            <td>{{ record.quantity }}</td>
+                            <td>{{ donor.blood_type }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.querySelector("table");
+        switching = true;
+        // Set the sorting direction to ascending:
+        dir = "asc";
+        /* Make a loop that will continue until no switching has been done: */
+        while (switching) {
+            // Start by saying: no switching is done:
+            switching = false;
+            rows = table.rows;
+            /* Loop through all table rows (except the first, which contains table headers): */
+            for (i = 1; i < (rows.length - 1); i++) {
+                // Start by saying there should be no switching:
+                shouldSwitch = false;
+                /* Get the two elements you want to compare, one from the current row and one from the next: */
+                x = rows[i].getElementsByTagName("TD")[n].innerHTML;
+                y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML;
+                /* Check if the two rows should switch place, based on the direction, asc or desc: */
+                if (dir == "asc") {
+                    if (isNaN(x) && isNaN(y)) {
+                        if (x.toLowerCase() > y.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else {
+                        if (parseFloat(x) > parseFloat(y)) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                } else if (dir == "desc") {
+                    if (isNaN(x) && isNaN(y)) {
+                        if (x.toLowerCase() < y.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else {
+                        if (parseFloat(x) < parseFloat(y)) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                /* If a switch has been marked, make the switch and mark that a switch has been done: */
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                // Each time a switch is done, increase switchcount by 1:
+                switchcount++;
+            } else {
+                /* If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again. */
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

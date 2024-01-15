@@ -1,0 +1,204 @@
+<!-- blood_request_history.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Request History</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Add your custom styles if needed -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .navbar {
+            background-color: #dc3545;
+            padding: 15px;
+            border-bottom: 1px solid #d6d6d6;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .navbar-brand {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #dc3545;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+            cursor: pointer; /* Add cursor pointer for sorting */
+        }
+
+        th {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <a class="navbar-brand" href="{{ url_for('index') }}">Blood Donation</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Blood Request History</h2>
+
+        <!-- Display Blood Request Records -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Patient Name</th>
+                    <th onclick="sortTable(1)">Gender</th>
+                    <th onclick="sortTable(2)">Contact</th>
+                    <th onclick="sortTable(3)">Date of Birth</th>
+                    <th onclick="sortTable(4)">Email</th>
+                    <th onclick="sortTable(5)">Request Date</th>
+                    <th onclick="sortTable(6)">Quantity Requested</th>
+                    <th onclick="sortTable(7)">Blood Group Requested</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if patients %}
+                {% for patient in patients %}
+                {% set request_records = get_request_records(patient.id) %}
+                {% for record in request_records %}
+                <tr>
+                    <td>{{ patient.full_name }}</td>
+                    <td>{{ patient.gender }}</td>
+                    <td>{{ patient.contact_details }}</td>
+                    <td>{{ patient.date_of_birth }}</td>
+                    <td>{{ patient.email }}</td>
+                    <td>{{ record.request_date }}</td>
+                    <td>{{ record.quantity }}</td>
+                    <td>{{ patient.blood_type }}</td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="8">No Blood Request History available.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.querySelector("table");
+            switching = true;
+            // Set the sorting direction to ascending:
+            dir = "asc";
+            /* Make a loop that will continue until no switching has been done: */
+            while (switching) {
+                // Start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /* Loop through all table rows (except the first, which contains table headers): */
+                for (i = 1; i < (rows.length - 1); i++) {
+                    // Start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /* Get the two elements you want to compare, one from the current row and one from the next: */
+                    x = rows[i].getElementsByTagName("TD")[n].innerHTML;
+                    y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML;
+                    /* Check if the two rows should switch place, based on the direction, asc or desc: */
+                    if (dir == "asc") {
+                        if (isNaN(x) && isNaN(y)) {
+                            if (x.toLowerCase() > y.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else {
+                            if (parseFloat(x) > parseFloat(y)) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    } else if (dir == "desc") {
+                        if (isNaN(x) && isNaN(y)) {
+                            if (x.toLowerCase() < y.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else {
+                            if (parseFloat(x) < parseFloat(y)) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    /* If a switch has been marked, make the switch and mark that a switch has been done: */
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    // Each time a switch is done, increase switchcount by 1:
+                    switchcount++;
+                } else {
+                    /* If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again. */
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+    </script>
+    
+</body>
+
+</html>

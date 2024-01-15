@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Add your custom styles if needed -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+            overflow-x: auto; /* Enable horizontal scrolling */
+        }
+
+        h2 {
+            color: #dc3545;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        table {
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+            width: max-content; /* Set table width to max-content */
+        }
+
+        th, td {
+            text-align: center;
+            white-space: nowrap; /* Prevent text wrapping */
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            background-color: #dc3545;
+            color: #ffffff;
+            font-size: 1.2em;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Styling for the Navbar */
+        .navbar {
+            background-color: #dc3545; /* Red color */
+        }
+
+        .navbar-brand, .navbar-nav .nav-link {
+            color: #ffffff;
+        }
+
+        .navbar-brand:hover, .navbar-nav .nav-link:hover {
+            color: #f8f9fa; /* Light background color on hover */
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <a class="navbar-brand" href="{{ url_for('index') }}">Blood Donation</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br><br>
+<div class="container mt-5">
+    <h2>Patient List</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)">Username</th>
+                <th onclick="sortTable(1)">Name</th>
+                <th onclick="sortTable(2)">Contact</th>
+                <th onclick="sortTable(3)">Blood Type</th>
+                <th onclick="sortTable(4)">Gender</th>
+                <th onclick="sortTable(5)">DOB</th>
+                <th onclick="sortTable(6)">Address</th>
+                <th onclick="sortTable(7)">Email</th>
+                <th onclick="sortTable(8)">Attending Physician</th>
+                <!-- <th onclick="sortTable(9)">Medical History</th> -->
+                <th onclick="sortTable(10)">Treatment History</th>
+                <th onclick="sortTable(11)">Password</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patients %}
+                <tr>
+                    <td>{{ patient.username }}</td>
+                    <td>{{ patient.full_name }}</td>
+                    <td>{{ patient.contact_details }}</td>
+                    <td>{{ patient.blood_type }}</td>
+                    <td>{{ patient.gender }}</td>
+                    <td>{{ patient.date_of_birth }}</td>
+                    <td>{{ patient.address }}</td>
+                    <td>{{ patient.email }}</td>
+                    <td>{{ patient.attending_physician }}</td>
+                    <!-- <td>{{ patient.medical_history }}</td> -->
+                    <td>{{ patient.treatment_history }}</td>
+                    <td>{{ patient.password }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- At the end of patient_list.html -->
+<script>
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.querySelector("table");
+        switching = true;
+        // Set the sorting direction to ascending:
+        dir = "asc";
+        /* Make a loop that will continue until no switching has been done: */
+        while (switching) {
+            // Start by saying: no switching is done:
+            switching = false;
+            rows = table.rows;
+            /* Loop through all table rows (except the first, which contains table headers): */
+            for (i = 1; i < (rows.length - 1); i++) {
+                // Start by saying there should be no switching:
+                shouldSwitch = false;
+                /* Get the two elements you want to compare, one from the current row and one from the next: */
+                x = rows[i].getElementsByTagName("TD")[n].innerHTML;
+                y = rows[i + 1].getElementsByTagName("TD")[n].innerHTML;
+                /* Check if the two rows should switch place, based on the direction, asc or desc: */
+                if (dir == "asc") {
+                    if (isNaN(x) && isNaN(y)) {
+                        if (x.toLowerCase() > y.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else {
+                        if (parseFloat(x) > parseFloat(y)) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                } else if (dir == "desc") {
+                    if (isNaN(x) && isNaN(y)) {
+                        if (x.toLowerCase() < y.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else {
+                        if (parseFloat(x) < parseFloat(y)) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                /* If a switch has been marked, make the switch and mark that a switch has been done: */
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                // Each time a switch is done, increase switchcount by 1:
+                switchcount++;
+            } else {
+                /* If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again. */
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

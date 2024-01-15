@@ -1,0 +1,125 @@
+<!-- templates/edit_patient_profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Patient Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Add your custom styles if needed -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .navbar {
+            background-color: #dc3545; /* Dark Gray */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar-nav .nav-link {
+            color: #ffffff;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #dc3545; /* Red on hover */
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #dc3545;
+            margin-bottom: 30px;
+        }
+
+        /* Add your other custom styles here */
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <a class="navbar-brand" href="{{ url_for('index') }}">Blood Donation</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                </li>
+            </ul>
+        </div>
+    </nav><br><br>
+    <div class="container mt-5">
+        <h2 class="mb-4">Edit Patient Profile</h2>
+        <form action="{{ url_for('edit_patient_profile', patient_id=patient_id) }}" method="post">
+            <!-- Edit Patient Profile Form -->
+            <div class="form-group">
+                <label for="full_name">Full Name:</label>
+                <input type="text" class="form-control" id="full_name" name="full_name" value="{{ patient.full_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <input type="text" class="form-control" id="gender" name="gender" value="{{ patient.gender }}" required>
+            </div>
+            <div class="form-group">
+                <label for="date_of_birth">Date of Birth:</label>
+                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ patient.date_of_birth }}" required>
+            </div>
+            <div class="form-group">
+                <label for="contact_details">Contact Details:</label>
+                <input type="text" class="form-control" id="contact_details" name="contact_details" value="{{ patient.contact_details }}" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" class="form-control" id="address" name="address" value="{{ patient.address }}" required>
+            </div>
+            <div class="form-group">
+                <label for="blood_type">Blood Type:</label>
+                <select class="form-control" id="blood_type" name="blood_type" required>
+                    <option value="A+" {% if patient.blood_type == 'A+' %}selected{% endif %}>A+</option>
+                    <option value="A-" {% if patient.blood_type == 'A-' %}selected{% endif %}>A-</option>
+                    <option value="B+" {% if patient.blood_type == 'B+' %}selected{% endif %}>B+</option>
+                    <option value="B-" {% if patient.blood_type == 'B-' %}selected{% endif %}>B-</option>
+                    <option value="AB+" {% if patient.blood_type == 'AB+' %}selected{% endif %}>AB+</option>
+                    <option value="AB-" {% if patient.blood_type == 'AB-' %}selected{% endif %}>AB-</option>
+                    <option value="O+" {% if patient.blood_type == 'O+' %}selected{% endif %}>O+</option>
+                    <option value="O-" {% if patient.blood_type == 'O-' %}selected{% endif %}>O-</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="medical_conditions">Medical Conditions:</label>
+                <input type="text" class="form-control" id="medical_conditions" name="medical_conditions" value="{{ patient.medical_conditions }}" required>
+            </div>
+            <div class="form-group">
+                <label for="treatment_history">Treatment History:</label>
+                <input type="text" class="form-control" id="treatment_history" name="treatment_history" value="{{ patient.treatment_history }}" required>
+            </div>
+            <div class="form-group">
+                <label for="attending_physician">Attending Physician:</label>
+                <input type="text" class="form-control" id="attending_physician" name="attending_physician" value="{{ patient.attending_physician }}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

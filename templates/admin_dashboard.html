@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+
+        .jumbotron {
+            background-color: #dc3545;
+            color: #ffffff;
+            padding: 60px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        h2 {
+            color: #dc3545;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        ul {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        li {
+            margin-bottom: 15px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #ffffff;
+            background-color: #dc3545;
+            padding: 15px 30px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+            display: inline-block;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+
+        a:hover {
+            background-color: #c82333;
+            box-shadow: 0 0 10px rgba(220, 53, 69, 0.8);
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .cta-btn {
+            background-color: #dc3545;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            background-color: #c82333;
+        }
+
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="display-4">Welcome to the Admin Dashboard!</h1>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h2>Quick Actions</h2>
+            <ul>
+                <li><a href="{{ url_for('blood_inventory') }}" class="cta-btn">View Blood Inventory</a></li>
+                <li><a href="{{ url_for('donor_list') }}" class="cta-btn">Check Donor List</a></li>
+                <li><a href="{{ url_for('patient_list') }}" class="cta-btn">Browse Patient List</a></li>
+                <li><a href="{{ url_for('donations_made') }}" class="cta-btn">View Donation History</a></li>
+                <li><a href="{{ url_for('blood_request_history') }}" class="cta-btn">Blood Provided to Requested History</a></li>
+                <!-- Add more quick action items here -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Add more sections or features as needed -->
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
